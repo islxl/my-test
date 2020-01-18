@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>购物车</title>
+    <style>
+      .active {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 宿主文件 -->
+    <div id="app">
+      <h2 :title="content">
+        <!-- 插值文本 -->
+        {{title}}
+      </h2>
+      <!-- 新增课程 -->
+      <course-add :value="course" @input="course=$event" @change='testChange' @click="addCourse"></course-add>
+      <!-- 列表组件 -->
+      <course-list :courses="courses"></course-list>
+
+      <p>
+        课程总数：{{total}}门
+      </p>
+    </div>
+    <script src="vue.js"></script>
+    <script>
+      // 课程列表组件
+      Vue.component("course-list", {
+        props: ["courses"],
+        data() {
+          return {
+            selectCourse: ""
+          };
+        },
+        template: `
+            <div>
+                <!-- 列表渲染 -->
+                <!-- <div v-for="c in courses" :key="c" :class="{active: selectCourse==c}" @click="selectCourse = c">
+                {{ c }}
+                </div> -->
+                <p v-if="!courses.length">没有课程信息</p>
+                <!-- style -->
+                <div v-else>
+                <div
+                v-for="c in courses"
+                :key="c"
+                :style="{'background-color': selectCourse==c?'green':''}"
+                @click="selectCourse = c"
+                >
+                {{ c }}
+                </div>
+                </div>
+                <!-- <p>
+                课程总数：{{totalCourse}}门
+                </p> -->
+            </div>
+            `
+      });
+    //   新增课程
+    Vue.component('course-add',{
+        props:['value'],
+        template:`
+            <!-- 用户输入 -->
+            <p>
+                <input
+                type="number"
+                :value = 'value'
+                v-on:input="(e)=>{$emit('input',e.target.value)}"
+                v-on:change="$emit('change')"
+                />
+                <button @click="$emit('click')">新增</button>
+            </p>
+        `,
+        methods:{}
+    })
+      // 模拟异步数据调用
+      function getCourses() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(["web", "app"]);
+          }, 2000);
+        });
+      }
+      // <!-- 1.创建vue实例 -->
+      const app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            title: "购物车!",
+            content: "这是购物车内容！",
+            courses: [],
+            course:'',
+            total: ""
+          };
+        },
+        async created() {
+          // 组件实例已创建，未挂载，dom不存在
+          this.courses = await getCourses();
+        },
+        mounted() {},
+        methods: {
+          addCourse() {
+            // 1.添加course到数组
+            this.courses.push(this.course);
+            // 2.清空course
+            this.course = '';
+          },
+          testInput() {
+            console.log("testinput````");
+          },
+          testChange() {
+            console.log("testchange`````");
+          }
+        },
+        computed: {
+          totalCourse() {
+            return this.courses.length;
+          }
+        },
+        // watch:{
+        //     courses(newVal){
+        //         this.total = newVal.length
+        //     }
+        // },
+        watch: {
+          courses: {
+            immediate: true,
+            handler(newVal) {
+              this.total = newVal.length;
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

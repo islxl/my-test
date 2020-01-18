@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>购物车</title>
+    <style>
+      .active {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 宿主文件 -->
+    <div id="app"></div>
+    <script src="vue.js"></script>
+    <script>
+      // <!-- 1.创建vue实例 -->
+      const app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            title: "购物车!",
+            content: "这是购物车内容！",
+            courses: [],
+            course: "",
+            selectCourse: ""
+          };
+        },
+        methods: {
+          addCourse() {
+            // 1.添加course到数组
+            this.courses.push(this.course);
+            // 2.清空course
+            this.course = "";
+          },
+          testInput() {
+            console.log("testinput````");
+          },
+          testChange() {
+            console.log("testchange`````");
+          }
+        },
+        render() {
+          with (this) {
+            return _c("div", { attrs: { id: "app" } }, [
+              _c("h2", { attrs: { title: content } }, [
+                _v("\n        " + _s(title) + "\n      ")
+              ]),
+              _v(" "),
+              _c("p", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model.lazy",
+                      value: course,
+                      expression: "course",
+                      modifiers: { lazy: true }
+                    }
+                  ],
+                  attrs: { type: "number" },
+                  domProps: { value: course },
+                  on: {
+                    keydown: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      )
+                        return null;
+                      return addCourse($event);
+                    },
+                    input: testInput,
+                    change: [
+                      function($event) {
+                        course = $event.target.value;
+                      },
+                      testChange
+                    ]
+                  }
+                }),
+                _v(" "),
+                _c("button", { on: { click: addCourse } }, [_v("新增")]),
+                _v(_s(course) + "\n      ")
+              ]),
+              _v(" "),
+              !courses.length
+                ? _c("p", [_v("没有课程信息")])
+                : _c(
+                    "div",
+                    _l(courses, function(c) {
+                      return _c(
+                        "div",
+                        {
+                          key: c,
+                          style: {
+                            "background-color": selectCourse == c ? "green" : ""
+                          },
+                          on: {
+                            click: function($event) {
+                              selectCourse = c;
+                            }
+                          }
+                        },
+                        [_v("\n          " + _s(c) + "\n        ")]
+                      );
+                    }),
+                    0
+                  )
+            ]);
+          }
+        }
+      });
+      console.log(app.$options.render);
+    </script>
+  </body>
+</html>
