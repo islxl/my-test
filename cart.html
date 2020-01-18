@@ -19,7 +19,7 @@
         {{title}}
       </h2>
       <!-- 新增课程 -->
-      <course-add v-model="course" @change="addCourse"></course-add>
+      <course-add v-model="course" @add="addCourse"></course-add>
       <!-- 列表组件 -->
       <course-list :courses="courses"></course-list>
 
@@ -63,16 +63,21 @@
       });
     //   新增课程
     Vue.component('course-add',{
-        props:['value'],
+        props:['val'],
+        model:{
+            value:'val',
+            event:'change'
+        },
         template:`
             <!-- 用户输入 -->
             <p>
                 <input
                 type="number"
-                :value = 'value'
-                v-on:input="$emit('input',$event.target.value)"
+                :value = 'val'
+                v-on:change="$emit('change',$event.target.value)"
                 />
-                <button @click="$emit('change')"">新增</button>
+                <button @click="$emit('add')"">新增</button>
+              
             </p>
         `,
         methods:{}
@@ -108,6 +113,7 @@
             this.courses.push(this.course);
             // 2.清空course
             this.course = '';
+            console.log('this:',this.course);
           },
           testInput() {
             console.log("testinput````");
