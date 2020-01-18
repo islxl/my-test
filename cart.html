@@ -19,7 +19,7 @@
         {{title}}
       </h2>
       <!-- 新增课程 -->
-      <course-add :value="course" @input="course=$event" @change='testChange' @click="addCourse"></course-add>
+      <course-add v-model="course" @change="addCourse"></course-add>
       <!-- 列表组件 -->
       <course-list :courses="courses"></course-list>
 
@@ -70,10 +70,9 @@
                 <input
                 type="number"
                 :value = 'value'
-                v-on:input="(e)=>{$emit('input',e.target.value)}"
-                v-on:change="$emit('change')"
+                v-on:input="$emit('input',$event.target.value)"
                 />
-                <button @click="$emit('click')">新增</button>
+                <button @click="$emit('change')"">新增</button>
             </p>
         `,
         methods:{}
